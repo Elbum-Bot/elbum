@@ -551,8 +551,16 @@ navToMsg model loc =
         _ ->
             --home link might count as internal if it's on the same domain
             let
+                parseUrl =
+                    case baseUrlOf model of
+                        Just bUrl ->
+                            parseOriginRelativeUrl bUrl
+
+                        Nothing ->
+                            Url.fromString
+
                 hUrl =
-                    Maybe.andThen Url.fromString <| homeOf model
+                    Maybe.andThen parseUrl <| homeOf model
 
                 locIsHome =
                     Maybe.withDefault False <| Maybe.map (\h -> h == loc) <| hUrl
